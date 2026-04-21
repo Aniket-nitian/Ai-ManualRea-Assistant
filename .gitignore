@@ -1,0 +1,16 @@
+# Node
+backend-node/node_modules/
+backend-node/uploads/
+
+# Python
+ai-service/venv/
+ai-service/__pycache__/
+
+# Env files
+.env
+backend-node/.env
+ai-service/.env
+
+# OS files
+.DS_Store
+Thumbs.db
