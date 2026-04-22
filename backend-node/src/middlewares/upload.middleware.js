@@ -3,10 +3,14 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "manual-ai",
-    resource_type: "auto",
+  cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: "manual-ai",
+      resource_type: "raw",
+      use_filename: true,
+      unique_filename: false,
+    };
   },
 });
 

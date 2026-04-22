@@ -8,9 +8,10 @@ export const uploadFile = asyncHandler(async (req, res) => {
     throw new ApiError(400, "File is required");
   }
 
-  const fileUrl = req.file.path;
+  const fileUrl = req.file.path.replace("/upload/", "/upload/fl_attachment/");
 
   const data = await processFileService(fileUrl);
+  console.log("Cloudinary URL:", req.file.path);
 
   return res
     .status(200)
