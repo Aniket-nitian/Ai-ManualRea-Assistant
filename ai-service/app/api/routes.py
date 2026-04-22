@@ -43,28 +43,29 @@ async def process_file(payload: dict):
         "chunks": len(chunks)
     }
 
-@router.post("/chat")
-async def chat(payload: dict):
-    query = payload.get("query")
 
-    embeddings = get_embeddings()
+from app.services.audio_service import generate_audio
+from app.services.rag_pipeline import generate_answer
 
-    vector_store = FAISS.load_local("vector_db", embeddings)
-
-    docs = get_relevant_docs(vector_store, query)
-
-    return {
-        "query": query,
-        "context": docs
-    }
+conversation_memory = []
 
 @router.post("/chat")
 async def chat(payload: dict):
     query = payload.get("query")
+    language = payload.get("language", "en")
 
-    answer = generate_answer(query)
+    
+    history_text = "\n".join(conversation_memory[-5:])  
+
+    result = generate_answer(query, history_text, language)
+
+    conversation_memory.append(f"User: {query}")
+    conversation_memory.append(f"AI: {result.get('summary')}")
+
+    speech_text = " ".join(result.get("steps", []))
+    audio_file = generate_audio(speech_text)
 
     return {
-        "query": query,
-        "answer": answer
+        "data": result,
+        "audio": audio_file
     }
