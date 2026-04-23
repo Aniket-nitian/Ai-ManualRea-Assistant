@@ -1,22 +1,9 @@
-import fs from "fs";
-import { uploadToCloudinary } from "./cloudinary.service.js";
-import { callAI } from "./python.service.js";
+import cloudinary from "../config/cloudinary.js";
 
-export const processFileService = async (file) => {
-  if (!file) {
-    throw new Error("File is required");
-  }
-
-  const fileUrl = await uploadToCloudinary(file.path);
-
-  fs.unlinkSync(file.path);
-
-  const response = await callAI({
-    file_url: fileUrl,
+export const uploadToCloudinary = async (filePath) => {
+  const result = await cloudinary.uploader.upload(filePath, {
+    resource_type: "auto",
   });
 
-  return {
-    fileUrl,
-    aiResponse: response,
-  };
+  return result.secure_url;
 };

@@ -1,12 +1,14 @@
 import { asyncHandler } from "../../utils/asyncHandler.js";
-import { processFileService } from "../../services/upload.service.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
+import { uploadToCloudinary } from "../../services/upload.service.js";
+import { sendFileToPython } from "../../services/python.service.js";
 
-export const uploadFile = asyncHandler(async (req, res) => {
-  const result = await processFileService(req.file);
+export const uploadController = asyncHandler(async (req, res) => {
+  const filePath = req.file.path;
 
-  res.status(200).json({
-    success: true,
-    message: "File uploaded & processed",
-    data: result,
-  });
+  const fileUrl = await uploadToCloudinary(filePath);
+
+  await sendFileToPython(fileUrl);
+
+  return res.json(new ApiResponse(200, { fileUrl }, "File processed"));
 });
