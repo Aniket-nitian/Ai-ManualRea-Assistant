@@ -1,19 +1,12 @@
 import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { processFileService } from "../../services/upload.services.js";
+import { processFileService } from "../../services/upload.service.js";
 
 export const uploadFile = asyncHandler(async (req, res) => {
-  if (!req.file) {
-    throw new ApiError(400, "File is required");
-  }
+  const result = await processFileService(req.file);
 
-  const fileUrl = req.file.path.replace("/upload/", "/upload/fl_attachment/");
-
-  const data = await processFileService(fileUrl);
-  console.log("Cloudinary URL:", req.file.path);
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, data, "File processed successfully"));
+  res.status(200).json({
+    success: true,
+    message: "File uploaded & processed",
+    data: result,
+  });
 });

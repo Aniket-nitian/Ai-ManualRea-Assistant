@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from app.api.routes import router
 
-app = FastAPI(title="AI Manual Service")
+app = FastAPI()
+
+app.include_router(router, prefix="/api")
 
 @app.get("/")
 def root():
     return {"message": "AI Service Running"}
-app.include_router(router)

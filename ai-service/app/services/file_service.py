@@ -1,16 +1,15 @@
 import requests
+import uuid
 
-def download_file(url: str, save_path: str):
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+def download_file(file_url: str):
+    file_path = f"temp_{uuid.uuid4()}.pdf"
 
-    response = requests.get(url, headers=headers, stream=True, allow_redirects=True)
+    response = requests.get(file_url)
 
     if response.status_code != 200:
-        raise Exception(f"Download failed: {response.status_code}")
+        raise Exception("Failed to download file")
 
-    with open(save_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                f.write(chunk)
+    with open(file_path, "wb") as f:
+        f.write(response.content)
+
+    return file_path

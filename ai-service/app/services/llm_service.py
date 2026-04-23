@@ -1,7 +1,7 @@
 import google.generativeai as genai
-import os
+from app.core.config import settings
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=settings.GEMINI_API_KEY)
 
 def get_llm():
-    return genai.GenerativeModel("gemini-2.5-flash")
+    return genai.GenerativeModel("gemini-2.5-flash-lite")

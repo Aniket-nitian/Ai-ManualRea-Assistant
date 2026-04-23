@@ -1,18 +1,11 @@
-import pdfplumber
-import pytesseract
-from PIL import Image
+import fitz  # PyMuPDF
 
 def extract_text_from_pdf(file_path: str):
     text = ""
 
-    with pdfplumber.open(file_path) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text()
+    doc = fitz.open(file_path)
 
-            if page_text:
-                text += page_text
-            else:# 🔥 OCR fallback
-                img = page.to_image(resolution=300).original
-                text += pytesseract.image_to_string(img)
+    for page in doc:
+        text += page.get_text()
 
     return text
